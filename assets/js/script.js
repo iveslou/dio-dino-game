@@ -1,10 +1,11 @@
-const dino = document.querySelector('.dino');
+let frog = document.querySelector('.frog');
 const background = document.querySelector('.background');
 let isJumping = false;
 let position = 0;
+let score = 0;
 
-// atribui a função 'jump' ao release da tecla 'espaço' (keycode da barra de espaço: 32)
-function handleKeyUp(event) {
+// atribui a função 'jump' ao press da tecla 'espaço' (keycode da barra de espaço: 32)
+function handleKeyDown(event) {
     if (event.keyCode === 32) {
         // permite o pulo apenas quando 'isJumping' é 'false' (impede 'double jump')
         if (!isJumping) {
@@ -30,49 +31,51 @@ function jump() {
                     isJumping = false;
                 } else {
                     position -= 20;
-                    dino.style.bottom = position + 'px';
+                    frog.style.bottom = position + 'px';
                 }
             }, 20);
         } else {
             position += 20;
             // sobe
-            dino.style.bottom = position + 'px';
+            frog.style.bottom = position + 'px';
         }
     }, 20);
 }
 
-// função responsável pelo surgimento e animação dos cactus
-// verifica também se há colisão de 'dino' com 'cacti'
-function createCacti() {
-    const cacti = document.createElement('div');
-    let cactiPosition = 1000;
+// função responsável pelo surgimento e animação das cobras
+// verifica também se há colisão de 'frog' com 'snake'
+function createSnake() {
+    const snake = document.createElement('div');
+    let snakePosition = 1000;
     // gera um valor aleatório entre 0 e 1 que é então multiplicado por 6000
     let randomTime = Math.random() * 6000;
 
-    cacti.classList.add('cacti');
-    cacti.style.left = 1000 + 'px';
-    background.appendChild(cacti);
+    snake.classList.add('snake');
+    snake.style.left = 1000 + 'px';
+    background.appendChild(snake);
 
-    // deleta os cactos que saem da tela
+    // deleta as cobras que saem da tela
     let leftInterval = setInterval(() => {
-        if (cactiPosition < -60) {
+        if (snakePosition < -60) {
             clearInterval(leftInterval);
-            background.removeChild(cacti);
+            background.removeChild(snake);
+            score += 5;
+            document.getElementById("score").innerHTML = "Pontos: " + score;
         }
-        // verifica se há colisão entre 'dino' e 'cacti'
+        // verifica se há colisão entre 'frog' e 'snake'
         // se há colisão o jogo é encerrado retornando "Fim de jogo"
-        else if (cactiPosition > 0 && cactiPosition < 60 && position < 60) {
+        else if (snakePosition > 0 && snakePosition < 60 && position < 60) {
             clearInterval(leftInterval);
-            document.body.innerHTML = '<h1 class= "game-over"> Fim de jogo </h1>';
+            document.body.innerHTML = '<h1 class= "game-over"> Fim de jogo </h1> <p class= "suaScore" >Sua pontuação : '+score+'</p> <a href="javascript:window.location.reload(true)"> <p>Jogar novamente</p> </a>';
         } else {
-            cactiPosition -= 10;
-            cacti.style.left = cactiPosition + 'px';
+            snakePosition -= 10;
+            snake.style.left = snakePosition + 'px';
         }
     }, 20);
 
-    setTimeout(createCacti, randomTime);
+    setTimeout(createSnake, randomTime);
 }
 
 // chamada de função
-createCacti();
-document.addEventListener ('keyup', handleKeyUp);
+createSnake();
+document.addEventListener ('keydown', handleKeyDown);
